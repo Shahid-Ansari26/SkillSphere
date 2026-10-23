@@ -247,4 +247,44 @@ router.post('/:lessonId/complete', protect, async (req, res) => {
   }
 });
 
+
+/**
+ * DELETE /api/lessons/:lessonId
+ * Delete a lesson. Admin access required.
+ */
+router.delete('/:lessonId', protect, admin, async (req, res) => {
+  try {
+    const { lessonId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(lessonId)) {
+      return res.status(400).json({
+        message: 'Invalid lesson ID',
+      });
+    }
+
+    const lesson = await Lesson.findById(lessonId);
+
+    if (!lesson) {
+      return res.status(404).json({
+        message: 'Lesson not found',
+      });
+    }
+
+    await lesson.deleteOne();
+
+    return res.status(200).json({
+      message: 'Lesson deleted successfully',
+      lessonId,
+      title: lesson.title,
+    });
+  } catch (error) {
+    console.error('Delete lesson error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to delete lesson',
+    });
+  }
+});
+
+
 module.exports = router;

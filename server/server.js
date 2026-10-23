@@ -29,10 +29,13 @@ const allowedOrigins = (
   .split(',')
   .map((origin) => origin.trim());
 
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests without an Origin header, such as local API tools.
+
+      // Allow requests without an Origin header,
+      // such as local API tools.
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
@@ -41,6 +44,7 @@ app.use(
     },
   })
 );
+
 
 app.use(express.json());
 
